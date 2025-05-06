@@ -25,16 +25,10 @@ const getCategories = async (req, res) => {
 
 const updateCategory = async (req, res) => {
   try {
-    const { _id } = req.params;
+    const { id } = req.params;
     const updateCategoryData = req.body;
-    console.log({ updateCategoryData });
-    const catrgoryTakdimt = await Category.findOne({ _id });
-    if (!catrgoryTakdimt) {
-      res.status(404).json({ message: "ort nofi" });
-    }
-
     const updatedCategory = await Category.findByIdAndUpdate(
-      _id,
+      id,
       updateCategoryData,
       { new: true }
     );
@@ -48,10 +42,9 @@ const updateCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
   try {
-    const { _id } = req.params;
-
-    await Category.deleteOne({ _id });
-    return res.status(200).json({ message: "houwa hadak haty itomsa7" });
+    const { id } = req.params;
+    await Category.findByIdAndDelete(id);
+    return res.status(200).json({ message: "houwa hadak rah tms7" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error", error });
@@ -63,9 +56,4 @@ module.exports = {
   getCategories,
   updateCategory,
   deleteCategory,
-
-
-};  
-
-
-
+};
