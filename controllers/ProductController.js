@@ -160,7 +160,7 @@ const updateProduct = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      product,
+      data: product,
     });
   } catch (error) {
     res.status(500).json({

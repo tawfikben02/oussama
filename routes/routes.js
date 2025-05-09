@@ -1,19 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const UserController = require("../controllers/UserController");
-const CategoryController = require("../controllers/CategoryController");
 const OrderController = require("../controllers/OrderController");
 const ProductController = require("../controllers/ProductController");
 const upload = require("../middlewares/multer");
 
 router.post("/register", UserController.Register);
 router.post("/login", UserController.Login);
-
-// CATEGORY ROUTES
-router.post("/categories", CategoryController.createCategory);
-router.get("/categories", CategoryController.getCategories);
-router.put("/categories/:id", CategoryController.updateCategory);
-router.delete("/categories/:id", CategoryController.deleteCategory);
 
 // ORDER ROUTES
 router.get("/orders", OrderController.getAllOrders);
