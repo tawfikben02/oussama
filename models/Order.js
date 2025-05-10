@@ -16,8 +16,10 @@ const OrderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    paymentType: {
+    status: {
       type: String,
+      enum: ["pending", "shipped", "cancelled", "delivered"],
+      default: "pending",
       required: true,
     },
     deletedAt: {

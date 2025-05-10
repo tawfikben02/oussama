@@ -4,12 +4,18 @@ const Product = require("../models/Product");
 // Create a new order
 const createOrder = async (req, res) => {
   try {
-    const { userId, productId, qte, paymentType } = req.body;
+    const { firstName, lastName, email, address, phone, productId, qte } =
+      req.body;
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User Not Found" });
-    }
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      phone,
+      password: "12345678",
+      address,
+      role: "client",
+    });
 
     const product = await Product.findById(productId);
     if (!product) {
@@ -17,10 +23,9 @@ const createOrder = async (req, res) => {
     }
 
     const newOrder = new Order({
-      userId,
+      userId: user._id,
       productId,
       qte,
-      paymentType,
     });
 
     const savedOrder = await newOrder.save();
@@ -137,12 +142,11 @@ const getOrdersByUserId = async (req, res) => {
 // Update an order
 const updateOrder = async (req, res) => {
   try {
-    const { qte, paymentType } = req.body;
+    const { qte } = req.body;
     const updates = {};
 
     // Only update fields that are provided
     if (qte !== undefined) updates.qte = qte;
-    if (paymentType !== undefined) updates.paymentType = paymentType;
 
     // Find and update the order
     const updatedOrder = await Order.findOneAndUpdate(
@@ -168,6 +172,36 @@ const updateOrder = async (req, res) => {
       message: "Error updating order",
       error: error.message,
     });
+  }
+};
+
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params; // Get the order ID from URL params
+    const { status } = req.body; // Get the status to update to from the request body
+
+    // Validate the status
+    if (!["pending", "shipped", "cancelled", "delivered"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status." });
+    }
+
+    // Find the order and update its status
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true } // Return the updated document
+    );
+
+    // If the order doesn't exist
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    // Return the updated order
+    res.status(200).json(order);
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
@@ -200,6 +234,7 @@ module.exports = {
   createOrder,
   getAllOrders,
   getOrderById,
+  updateOrderStatus,
   getOrdersByUserId,
   updateOrder,
   DeleteOrder,

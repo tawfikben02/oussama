@@ -11,6 +11,7 @@ router.post("/login", UserController.Login);
 // ORDER ROUTES
 router.get("/orders", OrderController.getAllOrders);
 router.get("/orders/:id", OrderController.getOrderById);
+router.put("/orders/:orderId/status", OrderController.updateOrderStatus);
 router.post("/orders", OrderController.createOrder);
 router.get("/users/:userId/orders", OrderController.getOrdersByUserId);
 router.put("/orders/:id", OrderController.updateOrder);
